@@ -150,46 +150,45 @@ document.querySelectorAll(".stat-box").forEach(box => {
 
 const navLinks = document.querySelectorAll(".nav-links a");
 
-const skillsArea = document.querySelector(".skills-scroll-area");
-
 const sections = [
     document.getElementById("home"),
     document.getElementById("about"),
-    skillsArea,
+    document.querySelector(".skills-scroll-area"),
     document.getElementById("experience"),
     document.getElementById("contact")
 ].filter(Boolean);
 
 function updateActiveNav() {
 
-    const position = window.scrollY + 150;
-
+    const scrollPosition = window.scrollY + 150;
     let currentSection = "home";
-
     sections.forEach(section => {
+        const sectionTop =
+            section.getBoundingClientRect().top + window.scrollY;
+        const sectionBottom = sectionTop + section.offsetHeight;
 
-        const top = section.getBoundingClientRect().top + window.scrollY;
-        const bottom = top + section.offsetHeight;
-
-        if (position >= top && position < bottom) {
-            currentSection = section === skillsArea ? "skills" : section.id;
+        if (
+            scrollPosition >= sectionTop &&
+            scrollPosition < sectionBottom
+        ) {
+            currentSection =
+                section.id || "skills";
         }
 
     });
 
     navLinks.forEach(link => {
-        link.classList.toggle(
-            "active",
-            link.getAttribute("href") === `#${currentSection}`
-        );
+
+        const isActive =
+            link.getAttribute("href") === `#${currentSection}`;
+        link.classList.toggle("active", isActive);
     });
 }
-
 window.addEventListener("scroll", updateActiveNav, { passive: true });
 window.addEventListener("resize", updateActiveNav);
 window.addEventListener("load", updateActiveNav);
-
 updateActiveNav();
+
 // triggers elemnt for type writter effect
 
 const aboutSection = document.querySelector("#about");
