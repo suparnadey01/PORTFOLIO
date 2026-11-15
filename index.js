@@ -146,28 +146,50 @@ document.querySelectorAll(".stat-box").forEach(box => {
 
 //ABout section
 
-// Select all sections and nav links
-const sections = document.querySelectorAll("section");
+// NAVBAR ACTIVE LINK ON SCROLL
+
 const navLinks = document.querySelectorAll(".nav-links a");
 
-window.addEventListener("scroll", () => {
-  let current = "";
-  sections.forEach(section => {
-    const sectionTop = section.offsetTop;
-    const sectionHeight = section.clientHeight;
-    if (pageYOffset >= sectionTop - sectionHeight / 3) {
-      current = section.getAttribute("id");
-    }
-  });
+const skillsArea = document.querySelector(".skills-scroll-area");
 
-  navLinks.forEach(link => {
-    link.classList.remove("active");
-    if (link.getAttribute("href") === "#" + current) {
-      link.classList.add("active");
-    }
-  });
-});
+const sections = [
+    document.getElementById("home"),
+    document.getElementById("about"),
+    skillsArea,
+    document.getElementById("experience"),
+    document.getElementById("contact")
+].filter(Boolean);
 
+function updateActiveNav() {
+
+    const position = window.scrollY + 150;
+
+    let currentSection = "home";
+
+    sections.forEach(section => {
+
+        const top = section.getBoundingClientRect().top + window.scrollY;
+        const bottom = top + section.offsetHeight;
+
+        if (position >= top && position < bottom) {
+            currentSection = section === skillsArea ? "skills" : section.id;
+        }
+
+    });
+
+    navLinks.forEach(link => {
+        link.classList.toggle(
+            "active",
+            link.getAttribute("href") === `#${currentSection}`
+        );
+    });
+}
+
+window.addEventListener("scroll", updateActiveNav, { passive: true });
+window.addEventListener("resize", updateActiveNav);
+window.addEventListener("load", updateActiveNav);
+
+updateActiveNav();
 // triggers elemnt for type writter effect
 
 const aboutSection = document.querySelector("#about");
